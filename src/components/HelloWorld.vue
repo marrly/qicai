@@ -2,7 +2,7 @@
  * @Author: MoZhuangRu
  * @Date: 2021-01-14 12:54:39
  * @LastEditors: MoZhuangRu
- * @LastEditTime: 2021-01-15 17:57:43
+ * @LastEditTime: 2021-01-20 17:15:59
  * @Description:
  -->
 <template>
@@ -29,7 +29,7 @@
           <el-input v-model="sumForm.threefour" class="input" style="width:100px"></el-input>
         </el-form-item>
       </el-form>
-      <el-form label-width="100px" style="width: 500px;margin:0 auto">
+      <el-form label-width="100px" style="width: 700px;margin:0 auto">
         <el-form-item label="一组：">
           <el-radio-group v-model="oneRadio">
             <el-radio :label="1213">12-13</el-radio>
@@ -40,6 +40,8 @@
         </el-form-item>
         <el-form-item label="二组：">
           <el-radio-group v-model="twoRadio">
+            <el-radio :label="23">23</el-radio>
+            <el-radio :label="24">24</el-radio>
             <el-radio :label="1223">12-23</el-radio>
             <el-radio :label="1224">12-24</el-radio>
             <el-radio :label="2324">23-24</el-radio>
@@ -48,6 +50,7 @@
         </el-form-item>
         <el-form-item label="三组：">
           <el-radio-group v-model="threeRadio">
+            <el-radio :label="13">13</el-radio>
             <el-radio :label="23">23</el-radio>
             <el-radio :label="34">34</el-radio>
             <el-radio :label="1323">13-23</el-radio>
@@ -98,6 +101,7 @@ export default {
   },
   data () {
     return {
+      unTwoData: [],
       filterData: [],
       unThreeData: [],
       oneRadio: '',
@@ -105,12 +109,15 @@ export default {
       threeRadio: '',
       fourRadio: '',
       sumForm: {
-        onetwo: '013789',
-        onefour: '013467',
-        twofour: '12358'
+        onetwo: '1245689',
+        onethree: '012359',
+        onefour: '12369',
+        twothree: '012689',
+        twofour: '',
+        threefour: '235689'
       },
       filterForm: {
-        one: '79'
+        one: '9'
       },
       oneTwoGroup: null,
       oneFourGroup: null,
@@ -119,31 +126,63 @@ export default {
   },
   methods: {
     onSearch () {
+      this.oneTwoGroup = this.getSumGroup(this.sumForm.onetwo)
+      this.oneThreeGroup = this.getSumGroup(this.sumForm.onethree)
+      this.oneFourGroup = this.getSumGroup(this.sumForm.onefour)
+      this.twoThreeGroup = this.getSumGroup(this.sumForm.twothree)
+      this.twoFourGroup = this.getSumGroup(this.sumForm.twofour)
+      this.threeFourGroup = this.getSumGroup(this.sumForm.threefour)
       if(this.oneRadio === 1214){
-        this.oneTwoGroup = this.getSumGroup(this.sumForm.onetwo)
-        this.oneFourGroup = this.getSumGroup(this.sumForm.onefour)
-        // this.getSort(this.oneTwoGroup,this.oneFourGroup)
         if(this.fourRadio === 1424) {
           this.twoFourGroup = this.getSumGroup(this.sumForm.twofour)
           this.getSort(this.oneTwoGroup,this.oneFourGroup)
           let data = this.onTwoFourFilter(this.twoFourGroup,this.unThreeData)
-          console.log(data);
-          if(this.threeRadio === 132334) {
-
-          }
-          if(this.threeRadio === 1334) {
-
-          }
-          if(this.threeRadio === 1323) {
-
+          // if(this.threeRadio === 132334) {
+          //   let oneTwoThreeFourData = this.onOneTwoThreeFourFilter(this.oneThreeGroup,this.twoThreeGroup,this.threeFourGroup,data)
+          //   this.onFilter(oneTwoThreeFourData)
+          // }
+          // if(this.threeRadio === 1334) {
+          //   let oneThreeData = this.onOneThreeFourFilter(this.oneThreeGroup,this.threeFourGroup,data)
+          //   this.onFilter(oneThreeData)
+          // }
+          // if(this.threeRadio === 1323) {
+          //   let twoThreeData = this.onOneThreeTwoThreeFilter(this.oneThreeGroup,this.twoThreeGroup,data)
+          //   this.onFilter(twoThreeData)
+          // }
+          if(this.threeRadio === 13) {
+            let oneThreeData = this.onOneThreeFilter(this.oneThreeGroup,data)
+            this.onFilter(oneThreeData)
           }
           if(this.threeRadio === 23) {
-
+            let twoThreeData = this.onTwoThreeFilter(this.twoThreeGroup,data)
+            this.onFilter(twoThreeData)
           }
           if(this.threeRadio === 34) {
-
+            let threeFourData = this.onThreeFourFilter(this.threeFourGroup,data)
+            this.onFilter(threeFourData)
           }
-          // this.onFilter(data)
+        }
+        if(this.fourRadio === 1434) {
+          this.threeFourGroup = this.getSumGroup(this.sumForm.threefour)
+          this.getSort(this.oneTwoGroup,this.oneFourGroup)
+          let data = this.onThreeFourFilter(this.threeFourGroup,this.unThreeData)
+          this.onFilter(data[0])
+        }
+      }
+      if(this.oneRadio === 1213){
+        console.log(1213);
+        this.getUnFourGroup(this.oneTwoGroup,this.oneThreeGroup)
+        if(this.fourRadio === 34) {
+          console.log(34);
+        }
+      }
+      if(this.oneRadio === 1314){
+        console.log(1314);
+        if(this.twoRadio === 23){
+          console.log(23);
+        }
+        if(this.twoRadio === 24){
+          console.log(24);
         }
       }
     },
@@ -157,19 +196,12 @@ export default {
       })
       this.unThreeData = [...onetype,...twotype]
     },
-    onTwoFourFilter(group,data){
-      let filter = []
-      data.forEach(item =>{
-        let _item = [...item]
-        group.forEach(num =>{
-          let _num = [...num]
-          if(((_item[1] === _num[0]) && (_item[3] === _num[1])) || ((_item[1] === _num[1]) && (_item[3] === _num[0]))) {
-            filter.push(item)
-          }
-        })
-      })
-      return filter
-    },
+    // getUnFourGroup(onetwo,onethree) {
+    //   // onetwo.forEach(item =>{
+    //   //   // let _item = [...item]
+
+    //   // })
+    // },
     getGourp(one,two,data){
       let group = []
       data.forEach(val =>{
@@ -184,6 +216,182 @@ export default {
         }
       })
       return group
+    },
+    onTwoFourFilter(group,data){
+      let filter = []
+      data.forEach(item =>{
+        let _item = [...item]
+        group.forEach(num =>{
+          let _num = [...num]
+          if(((_item[1] === _num[0]) && (_item[3] === _num[1])) || ((_item[1] === _num[1]) && (_item[3] === _num[0]))) {
+            filter.push(item)
+          }
+        })
+      })
+      return filter
+    },
+    // 132334
+    onOneTwoThreeFourFilter(onethree,twothree,threefour,data){
+      let filter = []
+      console.log('132334');
+      if(this.fourRadio === 1424) {
+        filter = data.map(item =>{
+          let _item = [...item]
+          onethree.forEach(num =>{
+            let _num = [...num]
+            twothree.forEach(sign =>{
+              let _sign = [...sign]
+              threefour.forEach(val =>{
+                let _val = [...val]
+                if(_item[0] === _num[0] && (((_num[1] === _val[0]) && (_item[3] === _val[1])) || ((_num[1] === _val[1]) && (_item[3] === _val[0])))){
+                  if((_item[1] === _sign[0] && _num[1] === _sign[1]) || (_item[1] === _sign[1] && _num[1] === _sign[0])) {
+                    _item[2] = _num[1]
+                  }
+
+                }
+                if(_item[0] === _num[1] && (((_num[0] === _val[0]) && (_item[3] === _val[1])) || ((_num[0] === _val[1]) && (_item[3] === _val[0])))){
+                  if((_item[1] === _sign[0] && _num[0] === _sign[1]) || (_item[1] === _sign[1] && _num[0] === _sign[0])) {
+                    _item[2] = _num[0]
+                  }
+                }
+              })
+            })
+          })
+          item = _item.join('')
+          return item
+        })
+      }
+      if(this.fourRadio === 1434) {
+        filter = data.map(item =>{
+          let _item = [...item]
+          onethree.forEach(num =>{
+            let _num = [...num]
+            twothree.forEach(sign =>{
+              let _sign = [...sign]
+              threefour.forEach(val =>{
+                let _val = [...val]
+                if(_item[0] === _num[0] && (((_num[1] === _val[0]) && (_item[3] === _val[1])) || ((_num[1] === _val[1]) && (_item[3] === _val[0])))){
+                  if((_item[1] === _sign[0] && _num[1] === _sign[1]) || (_item[1] === _sign[1] && _num[1] === _sign[0])) {
+                    _item[2] = _num[1]
+                  }
+
+                }
+                if(_item[0] === _num[1] && (((_num[0] === _val[0]) && (_item[3] === _val[1])) || ((_num[0] === _val[1]) && (_item[3] === _val[0])))){
+                  if((_item[1] === _sign[0] && _num[0] === _sign[1]) || (_item[1] === _sign[1] && _num[0] === _sign[0])) {
+                    _item[2] = _num[0]
+                  }
+                }
+              })
+            })
+          })
+          item = _item.join('')
+          return item
+        })
+      }
+      return filter
+    },
+    onOneThreeFourFilter(onethree,threefour,data){
+      let filter = []
+      console.log('1334');
+      // 1334
+      filter = data.map(item =>{
+        let _item = [...item]
+        onethree.forEach(num =>{
+          let _num = [...num]
+          threefour.forEach(val =>{
+            let _val = [...val]
+            if(_item[0] === _num[0] && (((_num[1] === _val[0]) && (_item[3] === _val[1])) || ((_num[1] === _val[1]) && (_item[3] === _val[0])))){
+              _item[2] = _num[1]
+            }
+            if(_item[0] === _num[1] && (((_num[0] === _val[0]) && (_item[3] === _val[1])) || ((_num[0] === _val[1]) && (_item[3] === _val[0])))){
+              _item[2] = _num[0]
+            }
+          })
+        })
+        item = _item.join('')
+        return item
+      })
+      return filter
+    },
+    // 1323
+    onOneThreeTwoThreeFilter(onethree,twothree,data){
+      let filter = []
+      console.log('1323');
+      filter = data.map(item =>{
+        let _item = [...item]
+        onethree.forEach(num =>{
+          let _num = [...num]
+          twothree.forEach(val =>{
+            let _val = [...val]
+            if(_item[0] === _num[0] && (((_num[1] === _val[0]) && (_item[1] === _val[1])) || ((_num[1] === _val[1]) && (_item[1] === _val[0])))){
+              _item[2] = _num[1]
+            }
+            if(_item[0] === _num[1] && (((_num[0] === _val[0]) && (_item[1] === _val[1])) || ((_num[0] === _val[1]) && (_item[1] === _val[0])))){
+              _item[2] = _num[0]
+            }
+          })
+        })
+        item = _item.join('')
+        return item
+      })
+      return filter
+    },
+    // 13
+    onOneThreeFilter(oneThree,data) {
+      let filter = []
+      data.forEach(item =>{
+        let _item = [...item]
+        oneThree.forEach(num =>{
+          let _num = [...num]
+          if(_item[0] === _num[0]){
+            _item[2] = _num[1]
+            filter.push(_item.join(''))
+          }
+          if(_item[0] === _num[1]){
+            _item[2] = _num[0]
+            filter.push(_item.join(''))
+          }
+        })
+      })
+      return Array.from(new Set(filter))
+    },
+    // 23
+    onTwoThreeFilter(twothree,data){
+      let filter = []
+      data.forEach(item =>{
+        let _item = [...item]
+        twothree.forEach(num =>{
+          let _num = [...num]
+          if(_item[1] === _num[0]){
+            _item[2] = _num[1]
+            filter.push(_item.join(''))
+          }
+          if(_item[1] === _num[1]){
+            _item[2] = _num[0]
+            filter.push(_item.join(''))
+          }
+        })
+      })
+      return Array.from(new Set(filter))
+    },
+    // 34
+    onThreeFourFilter(threefour,data){
+      let filter = []
+      data.forEach(item =>{
+        let _item = [...item]
+        threefour.forEach(num =>{
+          let _num = [...num]
+          if(_item[3] === _num[0]){
+            _item[2] = _num[1]
+            filter.push(_item.join(''))
+          }
+          if(_item[3] === _num[1]){
+            _item[2] = _num[0]
+            filter.push(_item.join(''))
+          }
+        })
+      })
+      return [Array.from(new Set(filter))]
     },
     getSumGroup (num) {
       let numArr = [...num]
@@ -225,8 +433,9 @@ export default {
       return group
     },
     onFilter (data) {
+      this.filterData = []
       let _one = [...this.filterForm.one]
-      data.forEach(item =>{
+      data.forEach((item) =>{
         _one.forEach(num =>{
           if([...item].includes(num)) {
             this.filterData.push(item)
