@@ -2,7 +2,7 @@
  * @Author: MoZhuangRu
  * @Date: 2021-01-14 12:54:39
  * @LastEditors: MoZhuangRu
- * @LastEditTime: 2021-01-22 17:44:29
+ * @LastEditTime: 2021-01-29 17:40:48
  * @Description:
  -->
 <template>
@@ -29,6 +29,7 @@
           <el-input v-model="sumForm.threefour" class="input" style="width:100px"></el-input>
         </el-form-item>
       </el-form>
+
       <el-form label-width="100px" style="width: 700px;margin:0 auto">
         <el-form-item label="一组：">
           <el-radio-group v-model="oneRadio">
@@ -86,8 +87,20 @@
       <div style="margin: 20px">
         <el-button @click="onSearch" type="primary">查询</el-button>
       </div>
+      <el-form :inline="true">
+        <el-form-item label="3码杀：">
+          <el-input v-model="filterThreeNum" class="input" style="width:100px"></el-input>
+        </el-form-item>
+        <el-form-item label="2码杀：">
+          <el-input v-model="filterTwoNum" class="input" style="width:100px"></el-input>
+        </el-form-item>
+        <el-form-item label="4码定：">
+          <el-input v-model="filterFourNum" class="input" style="width:100px"></el-input>
+        </el-form-item>
+      </el-form>
       <div style="margin: 20px">
-        <!-- <el-button @click="onFilter" type="primary">过滤</el-button> -->
+        <el-button @click="onFilterNum" type="primary">过滤</el-button>
+        <el-button @click="onClassFilter" type="primary">分类</el-button>
       </div>
     </div>
 
@@ -102,6 +115,9 @@ export default {
   },
   data () {
     return {
+      filterFourNum: '',
+      filterThreeNum: '',
+      filterTwoNum: '',
       groupData: [],
       oneTwoFourDataOne: [],
       oneTwoFourDataTwo: [],
@@ -119,12 +135,12 @@ export default {
       threeRadio: '',
       fourRadio: '',
       sumForm: {
-        onetwo: '1234780',
-        onethree: '46790',
-        onefour: '125678',
-        twothree: '13589',
-        twofour: '136890',
-        threefour: '2345670'
+        onetwo: '14789',
+        onethree: '34690',
+        onefour: '2345678',
+        twothree: '23458',
+        twofour: '256890',
+        threefour: '34580'
       },
       filterForm: {
         one: '9057'
@@ -135,6 +151,43 @@ export default {
     }
   },
   methods: {
+    onClassFilter () {
+      this.filterData = Array.from(new Set(this.filterData))
+      this.onClass( this.filterData)
+    },
+    onFilterNum () {
+      let data = []
+      if(this.filterThreeNum) {
+        let num = [...this.filterThreeNum]
+        this.filterData.forEach(item =>{
+          let _item = [...item]
+          if(!(_item.includes(num[0]) && _item.includes(num[1]) && _item.includes(num[2]))) {
+            data.push(item)
+          }
+        })
+      }
+      if(this.filterTwoNum) {
+        let num = [...this.filterTwoNum]
+        this.filterData.forEach(item =>{
+          let _item = [...item]
+          if(!(_item.includes(num[0]) && _item.includes(num[1]))) {
+            data.push(item)
+          }
+        })
+      }
+      if(this.filterFourNum) {
+        let num = [...this.filterFourNum]
+        this.filterData.forEach(item =>{
+          let _item = [...item]
+          if(_item.includes(num[0]) && _item.includes(num[1]) && _item.includes(num[2]) && _item.includes(num[3])) {
+            data.push(item)
+          }
+        })
+        console.log('4码定', data);
+      }
+      this.filterData = data
+      console.log(this.filterData.length);
+    },
     onSearch () {
       this.oneTwoGroup = this.getSumGroup(this.sumForm.onetwo)
       this.oneThreeGroup = this.getSumGroup(this.sumForm.onethree)
@@ -146,44 +199,27 @@ export default {
         this.getUnThreeGroup(this.oneTwoGroup,this.oneFourGroup)
         if(this.threeRadio === 13) {
           this.oneTwoFourDataOne = this.onOneThreeFilter(this.oneThreeGroup,this.unThreeData)
-          console.log(121413);
-          // this.onFilter(oneThreeData)
         }
         if(this.threeRadio === 23) {
           this.oneTwoFourDataTwo = this.onTwoThreeFilter(this.twoThreeGroup,this.unThreeData)
-          console.log(121423);
-
-          // this.onFilter(twoThreeData)
         }
         if(this.threeRadio === 34) {
           this.oneTwoFourDataThree = this.onThreeFourFilter(this.threeFourGroup,this.unThreeData)
-          console.log(121434);
-
-          // this.onFilter(threeFourData)
         }
       }
       if(this.oneRadio === 1213){
         this.getUnFourGroup(this.oneTwoGroup,this.oneThreeGroup)
         if(this.fourRadio === 34) {
           this.oneTwoThreeDataThree = this.onUnFourFilter(this.threeFourGroup,this.unFourData)
-          console.log(121334);
-
-          // this.onFilter(threeFourData)
         }
       }
       if(this.oneRadio === 1314){
         this.getUnTwoGroup(this.oneThreeGroup,this.oneTwoGroup)
         if(this.twoRadio === 23){
           this.oneThreeFourDataTwo = this.onUnTwoThreeFilter(this.twoThreeGroup,this.unTwoData)
-          console.log(131423);
-
-          // this.onFilter(twoThreeData)
         }
         if(this.twoRadio === 24){
           this.oneThreeFourDataThree = this.onUnTwoFourFilter(this.twoFourGroup,this.unTwoData)
-          console.log(131424);
-
-          // this.onFilter(twoFourData)
         }
       }
       this.groupData = [...this.oneTwoFourDataOne,...this.oneTwoFourDataTwo,...this.oneTwoFourDataThree,...this.oneTwoThreeDataThree,...this.oneThreeFourDataTwo,...this.oneThreeFourDataThree]
@@ -436,11 +472,6 @@ export default {
         if(_one.find(val => [...item].includes(val))) {
           this.filterData.push(item)
         }
-        // _one.forEach(num =>{
-        //   if([...item].includes(num)) {
-        //     this.filterData.push(item)
-        //   }
-        // })
       })
       console.log('过滤：',this.filterData.length);
 
