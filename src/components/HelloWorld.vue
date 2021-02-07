@@ -2,7 +2,7 @@
  * @Author: MoZhuangRu
  * @Date: 2021-01-14 12:54:39
  * @LastEditors: MoZhuangRu
- * @LastEditTime: 2021-01-29 17:40:48
+ * @LastEditTime: 2021-02-03 15:34:57
  * @Description:
  -->
 <template>
@@ -135,15 +135,15 @@ export default {
       threeRadio: '',
       fourRadio: '',
       sumForm: {
-        onetwo: '14789',
-        onethree: '34690',
-        onefour: '2345678',
-        twothree: '23458',
+        onetwo: '156789',
+        onethree: '234690',
+        onefour: '23578',
+        twothree: '234567',
         twofour: '256890',
-        threefour: '34580'
+        threefour: '13450'
       },
       filterForm: {
-        one: '9057'
+        one: '7'
       },
       oneTwoGroup: null,
       oneFourGroup: null,
@@ -186,7 +186,6 @@ export default {
         console.log('4码定', data);
       }
       this.filterData = data
-      console.log(this.filterData.length);
     },
     onSearch () {
       this.oneTwoGroup = this.getSumGroup(this.sumForm.onetwo)
@@ -214,7 +213,7 @@ export default {
         }
       }
       if(this.oneRadio === 1314){
-        this.getUnTwoGroup(this.oneThreeGroup,this.oneTwoGroup)
+        this.getUnTwoGroup(this.oneThreeGroup,this.oneFourGroup)
         if(this.twoRadio === 23){
           this.oneThreeFourDataTwo = this.onUnTwoThreeFilter(this.twoThreeGroup,this.unTwoData)
         }
